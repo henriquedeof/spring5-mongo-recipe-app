@@ -1,12 +1,12 @@
 package guru.springframework.repositories;
 
+import guru.springframework.bootstrap.RecipeBootstrap;
 import guru.springframework.domain.UnitOfMeasure;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
@@ -16,16 +16,29 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by jt on 6/17/17.
  */
-@Ignore
+//@Ignore
 @RunWith(SpringRunner.class)
-@DataJpaTest
+//@DataJpaTest
+@DataMongoTest
 public class UnitOfMeasureRepositoryIT {
+
+    @Autowired
+    CategoryRepository categoryRepository;
+
+    @Autowired
+    RecipeRepository recipeRepository;
 
     @Autowired
     UnitOfMeasureRepository unitOfMeasureRepository;
 
     @Before
     public void setUp() throws Exception {
+        this.recipeRepository.deleteAll();
+        this.categoryRepository.deleteAll();
+        this.unitOfMeasureRepository.deleteAll();
+
+        RecipeBootstrap recipeBootstrap = new RecipeBootstrap(categoryRepository, recipeRepository, unitOfMeasureRepository);
+        recipeBootstrap.onApplicationEvent(null);
     }
 
     @Test
